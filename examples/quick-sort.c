@@ -35,7 +35,7 @@ static void list_qsort(struct list_head *head)
     list_splice(&list_less, head);
     list_splice_tail(&list_greater, head);
 }
-
+/*
 int main(void)
 {
     struct list_head testlist;
@@ -73,3 +73,4 @@ int main(void)
 
     return 0;
 }
+*/

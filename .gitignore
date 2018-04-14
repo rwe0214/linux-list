@@ -28,3 +28,9 @@ tests/insert-sort
 tests/quick-sort
 tests/merge-sort
 .vscode/
+examples/common.h
+examples/list.h
+examples/analyze
+examples/output.txt
+scripts/sorttime.gp
+scripts/sorttime.png

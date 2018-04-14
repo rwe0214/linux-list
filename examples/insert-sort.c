@@ -38,7 +38,7 @@ static void list_insertsort(struct list_head *head)
         list_insert_sorted(item, head);
     }
 }
-
+/*
 int main(void)
 {
     struct list_head testlist;
@@ -76,3 +76,4 @@ int main(void)
 
     return 0;
 }
+*/

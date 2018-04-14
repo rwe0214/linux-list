@@ -33,7 +33,7 @@ static void list_merge_sorted(struct list_head *list1,
     }
 }
 
-static void list_merge_sort(struct list_head *head, int l, int u)
+static void __list_merge_sort(struct list_head *head, int l, int u)
 {
     struct list_head list_l, list_u, list1, list2;
     struct listitem *item = NULL, *is = NULL;
@@ -54,10 +54,19 @@ static void list_merge_sort(struct list_head *head, int l, int u)
             else
                 list_move_tail(&item->list, &list2);
         }
-        list_merge_sort(&list1, l, mid);
-        list_merge_sort(&list2, mid + 1, u);
+        __list_merge_sort(&list1, l, mid);
+        __list_merge_sort(&list2, mid + 1, u);
         list_merge_sorted(&list1, &list2, head);
     }
+}
+
+static void list_merge_sort(struct list_head *head)
+{
+    struct listitem *item = NULL;
+    int size = 0;
+    list_for_each_entry (item, head, list)
+        size++;
+    __list_merge_sort(head, 0, size);
 }
 
 int main(void)
@@ -82,7 +91,7 @@ int main(void)
     assert(!list_empty(&testlist));
 
     qsort(values, ARRAY_SIZE(values), sizeof(values[0]), cmpint);
-    list_merge_sort(&testlist, 0, (int) ARRAY_SIZE(values) - 1);
+    list_merge_sort(&testlist);
 
     i = 0;
     list_for_each_entry_safe (item, is, &testlist, list) {
