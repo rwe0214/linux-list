@@ -24,13 +24,12 @@ double diff_in_second(struct timespec t1, struct timespec t2)
 
 double get_sort_time(void (*sort)(struct list_head *),
                      int *value,
-                     struct list_head *head,
-                     int size)
+                     struct list_head *head)
 {
     struct timespec start, end;
     double time;
     struct listitem *item = NULL, *is;
-    int i = 0;
+    long long int i = 0;
 
     list_for_each_entry_safe (item, is, head, list) {
         item->i = value[i++];
@@ -42,9 +41,9 @@ double get_sort_time(void (*sort)(struct list_head *),
     return time;
 }
 
-int myexp10(int y)
+long long int myexp10(int y)
 {
-    int ret = 10, tmp;
+    long long int ret = 10, tmp;
     for (int i = 1; i < y; i++) {
         tmp = ret;
         ret <<= 3;
@@ -54,39 +53,53 @@ int myexp10(int y)
     return ret;
 }
 
+long long int myexp2(int y)
+{
+    long long int ret = 2;
+    for (int i = 1; i < y; i++) {
+        ret <<= 1;
+    }
+    return ret;
+}
+
 int main()
 {
-    int *value, test_size = 4;
+    int *value, test_size = 16;
     double t1, t2, t3;
     struct list_head testlist;
     struct listitem *items;
     srand(time(NULL));
-    printf("size\tinsert-sort\tquick-sort\tmerge-sort\n");
+    printf("size\tquick-sort\tmerge-sort\twhich is fast\n");
 
     for (int i = 1; i <= test_size; i++) {
         t1 = 0;
         t2 = 0;
         t3 = 0;
+        long long int array_size;
         for (int t = 0; t < 100; t++) {
-            int array_size = myexp10(i);
+            array_size = myexp2(i);
             value = malloc(sizeof(int) * array_size);
             INIT_LIST_HEAD(&testlist);
-            for (int j = 0; j < array_size; j++) {
-                value[j] = rand() % 366 + 1;
+            for (long long int j = 0; j < array_size; j++) {
+                value[j] = (int) rand() % 366 + 1;
                 items = (struct listitem *) malloc(sizeof(*items));
                 list_add_tail(&items->list, &testlist);
             }
-            t1 += get_sort_time(list_insertsort, value, &testlist, array_size);
-            t2 += get_sort_time(list_qsort, value, &testlist, array_size);
-            t3 += get_sort_time(list_merge_sort, value, &testlist, array_size);
+            //            t1 += get_sort_time(list_insertsort, value, &testlist,
+            //            array_size);
+            t2 += get_sort_time(list_qsort, value, &testlist);
+            t3 += get_sort_time(list_merge_sort, value, &testlist);
 
             free(value);
             free(items);
         }
-        printf("10^%d\t", i);
-        printf("%.10lf\t", t1 / 100);
+        printf("2^%d\t", i);
+        //        printf("%.10lf\t", t1 / 100);
         printf("%.10lf\t", t2 / 100);
-        printf("%.10lf\n", t3 / 100);
+        printf("%.10lf\t", t3 / 100);
+        printf("%s (%.2f X)\n",
+               (t2 / 100 < t3 / 100) ? "quick-sort" : "merge-sort",
+               (t2 / 100 < t3 / 100) ? (t3 / t2) : (t2 / t3));
     }
     return 0;
 }

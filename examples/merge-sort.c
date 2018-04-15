@@ -33,17 +33,17 @@ static void list_merge_sorted(struct list_head *list1,
     }
 }
 
-static void __list_merge_sort(struct list_head *head, int l, int u)
+static void __list_merge_sort(struct list_head *head,
+                              long long int l,
+                              long long int u)
 {
-    struct list_head list_l, list_u, list1, list2;
+    struct list_head list1, list2;
     struct listitem *item = NULL, *is = NULL;
-    int i, mid;
+    long long int i, mid;
 
     if (l >= u || list_empty(head) || list_is_singular(head))
         return;
     else {
-        INIT_LIST_HEAD(&list_l);
-        INIT_LIST_HEAD(&list_u);
         INIT_LIST_HEAD(&list1);
         INIT_LIST_HEAD(&list2);
         i = l;
@@ -63,7 +63,8 @@ static void __list_merge_sort(struct list_head *head, int l, int u)
 static void list_merge_sort(struct list_head *head)
 {
     struct listitem *item = NULL;
-    int size = 0;
+    long long int size = 0;
+
     list_for_each_entry (item, head, list)
         size++;
     __list_merge_sort(head, 0, size);
